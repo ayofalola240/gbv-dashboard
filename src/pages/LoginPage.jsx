@@ -13,21 +13,23 @@ const LoginPage = () => {
   const auth = useAuth();
   const navigate = useNavigate();
 
+  // src/pages/LoginPage.jsx
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError(''); // Clears previous error
     setLoading(true);
     try {
-      await auth.login(email, password);
+      await auth.login(email, password); // This should throw if login fails
       navigate('/dashboard');
     } catch (err) {
-      console.error('Login error:', err);
-      setError(err.message || 'Login failed. Please check your credentials.');
+      // This block should execute on error
+      console.error('Login page caught error:', err); // For debugging
+      setError(err.message || 'Login failed. Please check your credentials.'); // Sets the error state
     } finally {
       setLoading(false);
     }
   };
-
+  console.log('Current error state on render:', error);
   return (
     <AuthLayout title="Admin Login">
       <form onSubmit={handleSubmit}>
