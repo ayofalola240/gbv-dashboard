@@ -22,29 +22,25 @@ const RegisterPage = () => {
     e.preventDefault();
     setError('');
     setSuccessMessage('');
-
-    if (password !== confirmPassword) {
-      setError('Passwords do not match.');
-      return;
-    }
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long.');
-      return;
-    }
-
     setLoading(true);
-    const userData = {
-      firstname: firstName,
-      lastname: lastName,
-      email,
-      phone,
-      password
-    };
 
-    const success = await auth.register(userData); // Assumes auth.register is implemented
-    setLoading(false);
+    try {
+      if (password !== confirmPassword) {
+        throw new Error('Passwords do not match.');
+      }
+      if (password.length < 6) {
+        throw new Error('Password must be at least 6 characters long.');
+      }
 
-    if (success) {
+      const userData = {
+        firstname: firstName,
+        lastname: lastName,
+        email,
+        phone,
+        password
+      };
+
+      await auth.register(userData); // Assumes auth.register is implemented
       setSuccessMessage('Registration successful! You can now log in.');
       setFirstName('');
       setLastName('');
@@ -54,8 +50,10 @@ const RegisterPage = () => {
       setConfirmPassword('');
       // Optionally navigate to login:
       // setTimeout(() => navigate('/login'), 2000);
-    } else {
-      setError('Registration failed. Email/phone may be in use or an error occurred.');
+    } catch (err) {
+      setError(err.message || 'Registration failed. Email/phone may be in use or an error occurred.');
+    } finally {
+      setLoading(false);
     }
   };
 

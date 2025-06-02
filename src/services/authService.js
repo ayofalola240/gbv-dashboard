@@ -1,24 +1,31 @@
-// Mock API calls - replace with actual fetch/axios calls to your backend
-export const loginUser = async (email, password) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (email === 'admin@example.com' && password === 'password') {
-        resolve({
-          token: 'fake-jwt-token',
-          user: { firstname: 'Admin', lastname: 'User', email: 'admin@example.com' }
-        });
-      } else {
-        reject(new Error('Invalid credentials'));
-      }
-    }, 500);
-  });
-};
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
 export const registerUser = async (userData) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      console.log('Registered user (mock):', userData);
-      resolve({ message: 'Registration successful' });
-    }, 500);
+  const response = await fetch(`${API_BASE_URL}/auth/register`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(userData)
   });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Registration failed');
+  }
+  return data;
+};
+
+export const loginUser = async (email, password) => {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email, password })
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Invalid credentials');
+  }
+  return data;
 };

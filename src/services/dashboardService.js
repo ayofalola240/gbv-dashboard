@@ -1,15 +1,16 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const getDashboardStats = async () => {
+  const token = localStorage.getItem('authToken');
   try {
     const response = await fetch(`${API_BASE_URL}/dashboard/stats`, {
-      // Adjust URL if needed
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json'
-        // 'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // If protected
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` })
       }
     });
+
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
