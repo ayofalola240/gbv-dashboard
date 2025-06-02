@@ -1,0 +1,10 @@
+:root {
+  --primary-green: #008751;
+  --light-green: #d0f0e0; /* A lighter shade for backgrounds or accents */
+  --dark-green: #00572e; /* A darker shade for text or hover states */
+  --primary-white: #ffffff;
+  --light-grey: #f4f6f8;
+  --text-dark: #333333;
+  --text-light: #ffffff;
+  --border-color: #e0e0e0;
+}
