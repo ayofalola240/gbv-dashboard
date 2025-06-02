@@ -3,7 +3,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export const getDashboardStats = async () => {
   const token = localStorage.getItem('authToken');
   try {
-    const response = await fetch(`${API_BASE_URL}/dashboard/stats`, {
+    const response = await fetch(`${API_BASE_URL}/api/dashboard/stats`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
