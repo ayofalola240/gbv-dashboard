@@ -16,20 +16,20 @@ const LoginPage = () => {
   // src/pages/LoginPage.jsx
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Clears previous error
+    setError('');
     setLoading(true);
     try {
-      await auth.login(email, password); // This should throw if login fails
+      await auth.login(email, password);
       navigate('/dashboard');
     } catch (err) {
       // This block should execute on error
       console.error('Login page caught error:', err); // For debugging
-      setError(err.message || 'Login failed. Please check your credentials.'); // Sets the error state
+      setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
   };
-  console.log('Current error state on render:', error);
+
   return (
     <AuthLayout title="Admin Login">
       <form onSubmit={handleSubmit}>
