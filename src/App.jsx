@@ -5,6 +5,8 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProtectedRoute from './ProtectedRoute';
+import AllIncidentsPage from './pages/AllIncidentsPage';
+import IncidentDetailPage from './pages/IncidentDetailPage';
 
 function App() {
   return (
@@ -20,11 +22,26 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/dashboard/incidents"
+          element={
+            <ProtectedRoute>
+              <AllIncidentsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/incidents/:incidentId"
+          element={
+            <ProtectedRoute>
+              <IncidentDetailPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/" element={<LoginPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>
   );
 }
-
 export default App;
