@@ -2,7 +2,16 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/Dashboard/DashboardLayout';
 import { getIncidentById, updateIncidentStatusApi, escalateIncidentApi, addIncidentNoteApi } from '../services/incidentService';
-import Button from '../components/common/Button'; // Your Button component
+import Button from '../components/common/Button';
+import Input from '../components/common/Input';
+
+// At the top of your IncidentDetailPage.jsx, or in a separate constants file
+const AGENCIES = [
+  { value: 'NSCDC', label: 'NSCDC' },
+  { value: 'NAPTIP', label: 'NAPTIP' },
+  { value: 'FCTA WAS', label: 'FCTA' }
+  // Add more agencies here if needed
+];
 
 const IncidentDetailPage = () => {
   const { incidentId } = useParams();
@@ -135,10 +144,8 @@ const IncidentDetailPage = () => {
           <h1 className="text-2xl font-semibold text-primary-green">Incident Details: {incident.referenceId}</h1>
           <Button onClick={() => navigate('/dashboard/incidents')}>&larr; Back to All Incidents</Button>
         </div>
-
         {successMessage && <div className="mb-4 p-3 bg-light-green text-dark-green rounded">{successMessage}</div>}
         {actionError && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{actionError}</div>}
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
             <strong>Status:</strong>{' '}
@@ -173,7 +180,6 @@ const IncidentDetailPage = () => {
             {incident.servicesRequested && incident.servicesRequested.length > 0 ? incident.servicesRequested.join(', ') : 'None'}
           </div>
         </div>
-
         {incident.escalationDetails && (
           <div className="mb-4 p-3 border border-yellow-300 bg-yellow-50 rounded">
             <h3 className="font-semibold text-yellow-700">Escalation Details:</h3>
@@ -189,7 +195,6 @@ const IncidentDetailPage = () => {
             {incident.resolutionDetails.notes && <p>Notes: {incident.resolutionDetails.notes}</p>}
           </div>
         )}
-
         {/* Action Buttons */}
         <div className="mt-8 flex flex-wrap gap-4">
           {incident.status !== 'Resolved' && incident.status !== 'Closed' && incident.status !== 'Escalated' && (
@@ -198,39 +203,67 @@ const IncidentDetailPage = () => {
             </Button>
           )}
           {incident.status !== 'Resolved' && incident.status !== 'Closed' && (
-            <Button onClick={() => setShowResolveModal(true)} className="bg-green-600 hover:bg-green-700 text-white">
-              Mark as Resolved
-            </Button>
+            <Button onClick={() => setShowResolveModal(true)}>Mark as Resolved</Button>
           )}
-          <Button onClick={() => setShowAddNoteModal(true)} className="bg-blue-500 hover:bg-blue-600 text-white">
-            Add Internal Note
-          </Button>
+          <Button onClick={() => setShowAddNoteModal(true)}>Add Internal Note</Button>
         </div>
 
         {/* Modals for Actions - Simplified inline for brevity */}
         {showEscalateModal && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center z-50">
-            <div className="bg-white p-5 rounded-lg shadow-xl w-full max-w-md">
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center z-50 p-4">
+            {' '}
+            {/* Added padding for smaller screens */}
+            <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
+              {' '}
+              {/* Increased padding */}
               <h2 className="text-xl font-semibold text-primary-green mb-4">Escalate Incident</h2>
-              {actionError && <p className="text-red-500 mb-3">{actionError}</p>}
-              <Input label="Agency Name" value={escalateAgency} onChange={(e) => setEscalateAgency(e.target.value)} required />
+              {actionError && <p className="text-red-500 text-sm mb-3">{actionError}</p>}
+              {/* CHANGED: From Input to Select for Agency Name */}
+              <div className="mb-4">
+                <label htmlFor="escalateAgencySelect" className="block mb-1 font-bold text-text-dark">
+                  Agency Name
+                </label>
+                <select
+                  id="escalateAgencySelect"
+                  value={escalateAgency}
+                  onChange={(e) => {
+                    setEscalateAgency(e.target.value);
+                    if (e.target.value) setActionError(null); // Clear error when a selection is made
+                  }}
+                  required // HTML5 required attribute
+                  className="w-full p-2.5 border border-border-color rounded text-base focus:ring-2 focus:ring-primary-green focus:border-transparent outline-none appearance-none bg-white" // Tailwind classes for select
+                >
+                  <option value="">-- Select Agency --</option>
+                  {AGENCIES.map((agency) => (
+                    <option key={agency.value} value={agency.value}>
+                      {agency.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <textarea
                 value={escalateNotes}
                 onChange={(e) => setEscalateNotes(e.target.value)}
                 placeholder="Escalation notes (optional)"
-                className="w-full p-2 border border-border-color rounded mt-2 mb-4 h-24"
+                className="w-full p-2 border border-border-color rounded mt-2 mb-4 h-24 resize-none" // Added resize-none
               ></textarea>
-              <div className="flex justify-end gap-3">
+              <div className="flex justify-end gap-3 mt-4">
+                {' '}
+                {/* Added margin top */}
                 <Button
                   onClick={() => {
                     setShowEscalateModal(false);
-                    setActionError(null);
+                    setActionError(null); // Clear error on cancel
+                    setEscalateAgency(''); // Reset agency on cancel
+                    setEscalateNotes(''); // Reset notes on cancel
                   }}
-                  className="bg-gray-300 hover:bg-gray-400"
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-700" // More distinct cancel button
                 >
                   Cancel
                 </Button>
-                <Button onClick={handleEscalate} primary disabled={actionLoading}>
+                <Button onClick={handleEscalate} primary disabled={actionLoading || !escalateAgency}>
+                  {' '}
+                  {/* Disable if no agency selected */}
                   {actionLoading ? 'Escalating...' : 'Escalate'}
                 </Button>
               </div>
@@ -258,11 +291,7 @@ const IncidentDetailPage = () => {
                 >
                   Cancel
                 </Button>
-                <Button
-                  onClick={() => handleUpdateStatus('Resolved', resolveNotes)}
-                  className="bg-green-600 hover:bg-green-700 text-white"
-                  disabled={actionLoading}
-                >
+                <Button onClick={() => handleUpdateStatus('Resolved', resolveNotes)} primary disabled={actionLoading}>
                   {actionLoading ? 'Saving...' : 'Mark Resolved'}
                 </Button>
               </div>
