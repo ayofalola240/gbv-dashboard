@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const RecentIncidentsTable = ({ incidents }) => {
   if (!incidents || incidents.length === 0) {
@@ -26,6 +27,9 @@ const RecentIncidentsTable = ({ incidents }) => {
             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-light uppercase tracking-wider">
               Location (LGA)
             </th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-light uppercase tracking-wider">
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody className="bg-primary-white divide-y divide-border-color">
@@ -36,6 +40,11 @@ const RecentIncidentsTable = ({ incidents }) => {
               <td className="px-6 py-4 whitespace-nowrap text-sm text-text-dark">{incident.violenceType}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-text-dark">{incident.status}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-text-dark">{incident.locationLGA}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <Link to={`/dashboard/incidents/${incident.id}`} className="text-primary-green hover:text-dark-green">
+                  View Details
+                </Link>
+              </td>
             </tr>
           ))}
         </tbody>
