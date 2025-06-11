@@ -1,10 +1,14 @@
-// src/services/incidentService.ts
-import apiClient from './apiClient'; // Assuming you have a configured Axios instance
+import apiClient from './apiClient';
 
-export const getAllIncidents = async (/* page = 1, limit = 10, filters = {} */) => {
-  // Add query params for pagination/filtering: const params = new URLSearchParams({ page, limit, ...filters }).toString();
-  // const response = await apiClient.get(`/incidents?${params}`);
-  const response = await apiClient.get('/incidents'); // Simplified for now
+export const getAllIncidents = async (filters) => {
+  // Create URLSearchParams object to safely build the query string
+  const params = new URLSearchParams();
+
+  if (filters.status) params.append('status', filters.status);
+  if (filters.violenceType) params.append('violenceType', filters.violenceType);
+  if (filters.search) params.append('search', filters.search);
+
+  const response = await apiClient.get(`/incidents?${params.toString()}`);
   return response.data;
 };
 
