@@ -8,6 +8,7 @@ import ViolenceTypeChart from '../components/Dashboard/ViolenceTypeChart';
 import StatusOverviewChart from '../components/Dashboard/StatusOverviewChart';
 import RecentIncidentsTable from '../components/Dashboard/RecentIncidentsTable';
 import { getDashboardStats } from '../services/dashboardService';
+import AreaCouncilChart from '../components/Dashboard/AreaCouncilChart';
 // Example icons:
 // import { FaFileAlt, FaExclamationTriangle, FaCheckCircle, FaUsers } from 'react-icons/fa';
 
@@ -78,9 +79,88 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      <RecentIncidentsTable incidents={stats.recentIncidents} />
+      {/* <RecentIncidentsTable incidents={stats.recentIncidents} /> */}
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <RecentIncidentsTable incidents={stats.recentIncidents} />
+        </div>
+        <div>
+          <AreaCouncilChart data={stats.incidentsByAreaCouncil} />
+        </div>
+      </div>
     </DashboardLayout>
   );
 };
 
 export default DashboardPage;
+
+// const DashboardPage = () => {
+//   const [stats, setStats] = useState(null);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const data = await getDashboardStats();
+//         setStats(data);
+//       } catch (error) {
+//         console.error('Failed to fetch dashboard stats:', error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     fetchData();
+//   }, []);
+
+//   if (loading) {
+//     return (
+//       <DashboardLayout>
+//         <div className="text-center p-10 text-gray-500">Loading dashboard data...</div>
+//       </DashboardLayout>
+//     );
+//   }
+//   if (!stats) {
+//     return (
+//       <DashboardLayout>
+//         <div className="text-center p-10 text-red-500">Failed to load dashboard data. Please try again later.</div>
+//       </DashboardLayout>
+//     );
+//   }
+
+//   return (
+//     <DashboardLayout>
+//       {/* KPI Cards Row */}
+//       <div className="flex flex-wrap -m-2 mb-6">
+//         <MetricCard title="Total Incidents" value={stats.totalIncidents} />
+//         <MetricCard title="New This Week" value={stats.newThisWeek} />
+//         <MetricCard title="Resolved Incidents" value={stats.resolvedIncidents} />
+//         <MetricCard title="Pending Incidents" value={stats.pendingIncidents} />
+//       </div>
+
+//       {/* Main Charts Row */}
+//       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+//         <ViolenceTypeChart data={stats.incidentsByViolenceType} />
+//         <StatusOverviewChart data={stats.incidentStatusOverview} />
+//       </div>
+
+//       {/* --- MODIFIED: Bottom Row with Table and Area Council Chart --- */}
+// <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+//   <div className="lg:col-span-2">
+//       <RecentIncidentsTable incidents={stats.recentIncidents} />
+//   </div>
+//   <div>
+//       <AreaCouncilChart data={stats.incidentsByAreaCouncil} />
+//   </div>
+// </div>
+
+//     </DashboardLayout>
+//   );
+// };
+
+// // Main App component to be rendered
+// function App() {
+//     return <DashboardPage />;
+// }
+
+// export default App;
