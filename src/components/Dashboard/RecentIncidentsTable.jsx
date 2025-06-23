@@ -25,7 +25,7 @@ const RecentIncidentsTable = ({ incidents }) => {
               Status
             </th>
             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-light uppercase tracking-wider">
-              Location (LGA)
+              Location
             </th>
             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-light uppercase tracking-wider">
               Actions
@@ -39,7 +39,7 @@ const RecentIncidentsTable = ({ incidents }) => {
               <td className="px-6 py-4 whitespace-nowrap text-sm text-text-dark">{new Date(incident.dateReported).toLocaleDateString()}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-text-dark">{incident.violenceType}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-text-dark">{incident.status}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-text-dark">{incident.locationLGA}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-text-dark">{incident.areaCouncil}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <Link to={`/dashboard/incidents/${incident.id}`} className="text-primary-green hover:text-dark-green">
                   View Details

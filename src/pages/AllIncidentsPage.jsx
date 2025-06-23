@@ -29,7 +29,7 @@ const IncidentsTable = ({ incidents }) => {
               <td className="px-6 py-4 whitespace-nowrap text-sm text-text-dark">{new Date(incident.createdAt).toLocaleDateString()}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-text-dark">{incident.violenceType || 'N/A'}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-text-dark">{incident.status}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-text-dark">{incident.locationText || 'N/A'}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-text-dark">{incident.areaCouncil || 'N/A'}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <Link to={`/dashboard/incidents/${incident._id}`} className="text-primary-green hover:text-dark-green">
                   View Details
