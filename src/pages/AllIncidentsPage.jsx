@@ -58,12 +58,13 @@ const useDebounce = (value, delay) => {
 
 const STATUS_OPTIONS = ['New', 'Investigating', 'Referred to Agency', 'Escalated', 'Resolved', 'Closed'];
 const VIOLENCE_TYPE_OPTIONS = ['Physical', 'Sexual', 'Emotional', 'Trafficking', 'Rape', 'Other'];
+const AREA_COUNCIL_OPTIONS = ['AMAC', 'Bwari', 'Gwagwalada', 'Kuje', 'Kwali', 'Abaji'];
 
 const AllIncidentsPage = () => {
   const [incidents, setIncidents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filters, setFilters] = useState({ status: '', violenceType: '' });
+  const [filters, setFilters] = useState({ status: '', violenceType: '', areaCouncil: '' });
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
@@ -128,21 +129,17 @@ const AllIncidentsPage = () => {
     const dataBlob = new Blob([excelBuffer], { type: fileType });
     saveAs(dataBlob, 'incident_reports' + fileExtension);
   };
-
   return (
     <DashboardLayout>
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-        <h1 className="text-2xl font-semibold text-primary-green">All Incident Reports</h1>
-        {/* CHANGED: Button now calls handleExportExcel */}
+        <h1 className="text-2xl font-semibold text-green-800">All Incident Reports</h1>
         <Button onClick={handleExportExcel} primary disabled={incidents.length === 0}>
           Export as Excel
         </Button>
       </div>
 
-      {/* Search and Filter Controls (No changes here) */}
-      {/* Search and Filter Controls */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6 p-4 bg-primary-white rounded-lg shadow">
-        <div className="flex-1 min-w-[200px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 p-4 bg-white rounded-lg shadow">
+        <div className="lg:col-span-1">
           <label htmlFor="search" className="block text-sm font-medium text-gray-700">
             Search
           </label>
@@ -152,10 +149,10 @@ const AllIncidentsPage = () => {
             placeholder="Ref ID, description..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="mt-1 w-full p-2 border border-border-color rounded focus:ring-primary-green focus:border-primary-green"
+            className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
           />
         </div>
-        <div className="flex-1 min-w-[200px]">
+        <div>
           <label htmlFor="status" className="block text-sm font-medium text-gray-700">
             Filter by Status
           </label>
@@ -164,7 +161,7 @@ const AllIncidentsPage = () => {
             name="status"
             value={filters.status}
             onChange={handleFilterChange}
-            className="mt-1 w-full p-2 border border-border-color rounded bg-white focus:ring-primary-green focus:border-primary-green"
+            className="mt-1 w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-green-500 focus:border-green-500"
           >
             <option value="">All Statuses</option>
             {STATUS_OPTIONS.map((status) => (
@@ -174,7 +171,7 @@ const AllIncidentsPage = () => {
             ))}
           </select>
         </div>
-        <div className="flex-1 min-w-[200px]">
+        <div>
           <label htmlFor="violenceType" className="block text-sm font-medium text-gray-700">
             Filter by Violence Type
           </label>
@@ -183,12 +180,31 @@ const AllIncidentsPage = () => {
             name="violenceType"
             value={filters.violenceType}
             onChange={handleFilterChange}
-            className="mt-1 w-full p-2 border border-border-color rounded bg-white focus:ring-primary-green focus:border-primary-green"
+            className="mt-1 w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-green-500 focus:border-green-500"
           >
             <option value="">All Types</option>
             {VIOLENCE_TYPE_OPTIONS.map((vtype) => (
               <option key={vtype} value={vtype}>
                 {vtype}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="areaCouncil" className="block text-sm font-medium text-gray-700">
+            Filter by Area Council
+          </label>
+          <select
+            id="areaCouncil"
+            name="areaCouncil"
+            value={filters.areaCouncil}
+            onChange={handleFilterChange}
+            className="mt-1 w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-green-500 focus:border-green-500"
+          >
+            <option value="">All Area Councils</option>
+            {AREA_COUNCIL_OPTIONS.map((council) => (
+              <option key={council} value={council}>
+                {council}
               </option>
             ))}
           </select>

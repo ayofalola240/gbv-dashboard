@@ -6,6 +6,7 @@ export const getAllIncidents = async (filters) => {
 
   if (filters.status) params.append('status', filters.status);
   if (filters.violenceType) params.append('violenceType', filters.violenceType);
+  if (filters.areaCouncil) params.append('areaCouncil', filters.areaCouncil);
   if (filters.search) params.append('search', filters.search);
 
   const response = await apiClient.get(`/incidents?${params.toString()}`);
