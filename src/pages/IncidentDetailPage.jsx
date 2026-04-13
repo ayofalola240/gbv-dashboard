@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/Dashboard/DashboardLayout';
-import { getIncidentById, updateIncidentStatusApi, escalateIncidentApi, addIncidentNoteApi } from '../services/incidentService';
+import { getIncidentById, getIncidentMedia, updateIncidentStatusApi, escalateIncidentApi, addIncidentNoteApi } from '../services/incidentService';
 import Button from '../components/common/Button';
-import Input from '../components/common/Input';
 
 // At the top of your IncidentDetailPage.jsx, or in a separate constants file
 const AGENCIES = [
@@ -21,6 +20,7 @@ const IncidentDetailPage = () => {
   const [error, setError] = useState(null);
   const [actionError, setActionError] = useState();
   const [actionLoading, setActionLoading] = useState(false);
+  const [mediaFiles, setMediaFiles] = useState([]);
 
   // States for modal/forms for actions
   const [showEscalateModal, setShowEscalateModal] = useState(false);
@@ -35,8 +35,9 @@ const IncidentDetailPage = () => {
     if (!incidentId) return;
     try {
       setLoading(true);
-      const data = await getIncidentById(incidentId);
+      const [data, media] = await Promise.all([getIncidentById(incidentId), getIncidentMedia(incidentId)]);
       setIncident(data);
+      setMediaFiles(media);
       setError(null);
     } catch (err) {
       setError(err.message || 'Failed to fetch incident details.');
@@ -179,6 +180,40 @@ const IncidentDetailPage = () => {
             <strong>Services Requested:</strong>{' '}
             {incident.servicesRequested && incident.servicesRequested.length > 0 ? incident.servicesRequested.join(', ') : 'None'}
           </div>
+        </div>
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-primary-green mb-3">Uploaded Media</h2>
+          {mediaFiles.length === 0 ? (
+            <p className="text-sm text-gray-600">No media uploaded for this incident.</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {mediaFiles.map((media) => (
+                <div key={media.id} className="border border-border-color rounded p-3 bg-gray-50">
+                  <div className="flex justify-between items-start gap-3 mb-2">
+                    <div>
+                      <p className="font-semibold text-text-dark">{media.fileType}</p>
+                      <p className="text-xs text-gray-600">{media.mimeType || 'Unknown type'}</p>
+                    </div>
+                    <a
+                      href={media.signedUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sm font-medium text-primary-green underline"
+                    >
+                      Open
+                    </a>
+                  </div>
+                  {media.fileType === 'Image' && (
+                    <img src={media.signedUrl} alt="Incident evidence" className="w-full max-h-80 object-contain rounded bg-white" />
+                  )}
+                  {media.fileType === 'Audio' && <audio controls src={media.signedUrl} className="w-full" />}
+                  {media.fileType === 'Video' && <video controls src={media.signedUrl} className="w-full max-h-96 rounded bg-black" />}
+                  {media.fileType === 'Document' && <p className="text-sm text-gray-700">Use Open to view or download this file.</p>}
+                  {media.caption && <p className="mt-2 text-sm text-gray-700">Caption: {media.caption}</p>}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         {incident.escalationDetails && (
           <div className="mb-4 p-3 border border-yellow-300 bg-yellow-50 rounded">

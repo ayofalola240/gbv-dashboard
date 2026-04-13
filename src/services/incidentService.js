@@ -18,6 +18,11 @@ export const getIncidentById = async (incidentId) => {
   return response.data;
 };
 
+export const getIncidentMedia = async (incidentId) => {
+  const response = await apiClient.get(`/incidents/${incidentId}/media`);
+  return response.data.media || [];
+};
+
 export const updateIncidentStatusApi = async (incidentId, status, notes) => {
   const response = await apiClient.put(`/incidents/${incidentId}/status`, { status, notes });
   return response.data;
