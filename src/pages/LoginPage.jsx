@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import AuthLayout from '../components/Auth/AuthLayout';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
+import { ROLE_TO_AGENCY_SLUG } from '../config/agencies';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -19,8 +20,9 @@ const LoginPage = () => {
     setError('');
     setLoading(true);
     try {
-      await auth.login(email, password);
-      navigate('/dashboard');
+      const data = await auth.login(email, password);
+      const ownSlug = ROLE_TO_AGENCY_SLUG[data?.role];
+      navigate(ownSlug ? `/dashboard/agency/${ownSlug}` : '/dashboard');
     } catch (err) {
       // This block should execute on error
       console.error('Login page caught error:', err); // For debugging

@@ -36,12 +36,12 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem(
         'userData',
         JSON.stringify({
-          // Store only necessary, non-sensitive user info
           _id: data._id,
           firstname: data.firstname,
           lastname: data.lastname,
           email: data.email,
-          phone: data.phone
+          phone: data.phone,
+          role: data.role,
         })
       );
       setToken(data.token);
@@ -50,10 +50,11 @@ export const AuthProvider = ({ children }) => {
         firstname: data.firstname,
         lastname: data.lastname,
         email: data.email,
-        phone: data.phone
+        phone: data.phone,
+        role: data.role,
       });
       setIsAuthenticated(true);
-      return true;
+      return { role: data.role };
     } catch (error) {
       console.error('Login failed in AuthContext:', error);
       // Ensure states are reset on failure

@@ -34,3 +34,18 @@ export const AGENCY_CONFIG = {
 };
 
 export const AGENCIES_LIST = Object.values(AGENCY_CONFIG);
+
+// Maps an agency-scoped role to the single agency slug it controls
+export const ROLE_TO_AGENCY_SLUG = {
+  nscdc_admin: 'nscdc',
+  naptip_admin: 'naptip',
+  fcta_admin: 'fcta',
+  police_admin: 'police',
+};
+
+/** Returns the slugs the given role is allowed to access, or all slugs for super_admin. */
+export function getAllowedAgencySlugs(role) {
+  if (role === 'super_admin') return AGENCIES_LIST.map((a) => a.slug);
+  const slug = ROLE_TO_AGENCY_SLUG[role];
+  return slug ? [slug] : [];
+}

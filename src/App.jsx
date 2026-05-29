@@ -4,6 +4,7 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProtectedRoute from './ProtectedRoute';
+import AgencyProtectedRoute from './AgencyProtectedRoute';
 import AllIncidentsPage from './pages/AllIncidentsPage';
 import IncidentDetailPage from './pages/IncidentDetailPage';
 import AgencyDashboardPage from './pages/AgencyDashboardPage';
@@ -18,7 +19,7 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole="super_admin">
               <DashboardPage />
             </ProtectedRoute>
           }
@@ -26,7 +27,7 @@ function App() {
         <Route
           path="/dashboard/incidents"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole="super_admin">
               <AllIncidentsPage />
             </ProtectedRoute>
           }
@@ -34,7 +35,7 @@ function App() {
         <Route
           path="/dashboard/incidents/:incidentId"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole="super_admin">
               <IncidentDetailPage />
             </ProtectedRoute>
           }
@@ -42,15 +43,15 @@ function App() {
         <Route
           path="/dashboard/agency/:agencySlug"
           element={
-            <ProtectedRoute>
+            <AgencyProtectedRoute>
               <AgencyDashboardPage />
-            </ProtectedRoute>
+            </AgencyProtectedRoute>
           }
         />
         <Route
           path="/dashboard/users"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole="super_admin">
               <UserManagementPage />
             </ProtectedRoute>
           }

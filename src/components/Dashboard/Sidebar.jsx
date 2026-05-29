@@ -4,7 +4,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { getDashboardStats } from '../../services/dashboardService';
 import nigeriaLogo from '../../assets/nigeria-logo.png';
-import { AGENCIES_LIST } from '../../config/agencies';
+import { AGENCIES_LIST, getAllowedAgencySlugs } from '../../config/agencies';
 
 const SUB_TABS = [
   { label: 'Overview', tab: 'overview' },
@@ -18,6 +18,10 @@ const Sidebar = ({ incidentCount }) => {
   const [totalIncidents, setTotalIncidents] = useState(incidentCount);
   const [agencyCounts, setAgencyCounts] = useState({});
   const [openAgency, setOpenAgency] = useState(null);
+
+  const isSuperAdmin = user?.role === 'super_admin';
+  const allowedSlugs = getAllowedAgencySlugs(user?.role);
+  const visibleAgencies = AGENCIES_LIST.filter((a) => allowedSlugs.includes(a.slug));
 
   useEffect(() => {
     if (incidentCount !== undefined) {
@@ -76,49 +80,51 @@ const Sidebar = ({ incidentCount }) => {
       </NavLink>
 
       <div className="flex-1 overflow-y-auto px-3 py-6">
-        {/* Main Menu */}
-        <section className="mb-8">
-          <h2 className="mb-3 px-3 text-[11px] font-extrabold uppercase tracking-widest text-gray-400">
-            Main Menu
-          </h2>
-          <nav className="space-y-1">
-            <NavLink
-              to="/dashboard"
-              end
-              className={({ isActive }) =>
-                `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all ${
-                  isActive
+        {/* Main Menu — super admin only */}
+        {isSuperAdmin && (
+          <section className="mb-8">
+            <h2 className="mb-3 px-3 text-[11px] font-extrabold uppercase tracking-widest text-gray-400">
+              Main Menu
+            </h2>
+            <nav className="space-y-1">
+              <NavLink
+                to="/dashboard"
+                end
+                className={({ isActive }) =>
+                  `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all ${
+                    isActive
+                      ? 'bg-primary-green text-white shadow-sm'
+                      : 'text-gray-700 hover:bg-light-green hover:text-primary-green'
+                  }`
+                }
+              >
+                <FiGrid className="h-5 w-5 shrink-0" />
+                <span>Dashboard Overview</span>
+              </NavLink>
+
+              <NavLink
+                to="/dashboard/incidents"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all ${
+                  reportsActive
                     ? 'bg-primary-green text-white shadow-sm'
                     : 'text-gray-700 hover:bg-light-green hover:text-primary-green'
-                }`
-              }
-            >
-              <FiGrid className="h-5 w-5 shrink-0" />
-              <span>Dashboard Overview</span>
-            </NavLink>
-
-            <NavLink
-              to="/dashboard/incidents"
-              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all ${
-                reportsActive
-                  ? 'bg-primary-green text-white shadow-sm'
-                  : 'text-gray-700 hover:bg-light-green hover:text-primary-green'
-              }`}
-            >
-              <FiFileText className="h-5 w-5 shrink-0" />
-              <span className="min-w-0 flex-1">All Reports</span>
-              <span
-                className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
-                  reportsActive ? 'bg-white/20 text-white' : 'bg-light-green text-primary-green'
                 }`}
               >
-                {totalIncidents ?? '--'}
-              </span>
-            </NavLink>
-          </nav>
-        </section>
+                <FiFileText className="h-5 w-5 shrink-0" />
+                <span className="min-w-0 flex-1">All Reports</span>
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
+                    reportsActive ? 'bg-white/20 text-white' : 'bg-light-green text-primary-green'
+                  }`}
+                >
+                  {totalIncidents ?? '--'}
+                </span>
+              </NavLink>
+            </nav>
+          </section>
+        )}
 
-        <div className="mx-3 mb-6 h-px bg-border-color" />
+        {isSuperAdmin && <div className="mx-3 mb-6 h-px bg-border-color" />}
 
         {/* Agency Dashboards */}
         <section className="mb-8">
@@ -126,7 +132,7 @@ const Sidebar = ({ incidentCount }) => {
             Agency Dashboards
           </h2>
           <div className="space-y-1">
-            {AGENCIES_LIST.map((agency) => {
+            {visibleAgencies.map((agency) => {
               const agencyPath = `/dashboard/agency/${agency.slug}`;
               const isActive = isAgencyActive(agency.slug);
               const isExpanded = openAgency === agency.slug;
@@ -196,34 +202,36 @@ const Sidebar = ({ incidentCount }) => {
 
         <div className="mx-3 mb-6 h-px bg-border-color" />
 
-        {/* Administration */}
-        <section>
-          <h2 className="mb-3 px-3 text-[11px] font-extrabold uppercase tracking-widest text-gray-400">
-            Administration
-          </h2>
-          <div className="space-y-1">
-            <NavLink
-              to="/dashboard/users"
-              className={({ isActive }) =>
-                `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all ${
-                  isActive
-                    ? 'bg-primary-green text-white shadow-sm'
-                    : 'text-gray-700 hover:bg-light-green hover:text-primary-green'
-                }`
-              }
-            >
-              <FiUsers className="h-5 w-5 shrink-0" />
-              <span>User Management</span>
-            </NavLink>
-            <button
-              type="button"
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-gray-700 transition-all hover:bg-light-green hover:text-primary-green"
-            >
-              <FiSettings className="h-5 w-5 shrink-0" />
-              <span>Settings</span>
-            </button>
-          </div>
-        </section>
+        {/* Administration — super admin only */}
+        {isSuperAdmin && (
+          <section>
+            <h2 className="mb-3 px-3 text-[11px] font-extrabold uppercase tracking-widest text-gray-400">
+              Administration
+            </h2>
+            <div className="space-y-1">
+              <NavLink
+                to="/dashboard/users"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all ${
+                    isActive
+                      ? 'bg-primary-green text-white shadow-sm'
+                      : 'text-gray-700 hover:bg-light-green hover:text-primary-green'
+                  }`
+                }
+              >
+                <FiUsers className="h-5 w-5 shrink-0" />
+                <span>User Management</span>
+              </NavLink>
+              <button
+                type="button"
+                className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-gray-700 transition-all hover:bg-light-green hover:text-primary-green"
+              >
+                <FiSettings className="h-5 w-5 shrink-0" />
+                <span>Settings</span>
+              </button>
+            </div>
+          </section>
+        )}
       </div>
 
       {/* User profile footer */}
