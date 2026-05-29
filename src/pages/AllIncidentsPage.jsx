@@ -130,7 +130,7 @@ const AllIncidentsPage = () => {
     saveAs(dataBlob, 'incident_reports' + fileExtension);
   };
   return (
-    <DashboardLayout>
+    <DashboardLayout incidentCount={incidents.length}>
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <h1 className="text-2xl font-semibold text-green-800">All Incident Reports</h1>
         <Button onClick={handleExportExcel} primary disabled={incidents.length === 0}>

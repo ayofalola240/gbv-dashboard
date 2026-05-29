@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth'; // Assuming you have useAuth hook
+import { useAuth } from '../hooks/useAuth';
 import AuthLayout from '../components/Auth/AuthLayout';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
@@ -32,15 +32,7 @@ const RegisterPage = () => {
         throw new Error('Password must be at least 6 characters long.');
       }
 
-      const userData = {
-        firstname: firstName,
-        lastname: lastName,
-        email,
-        phone,
-        password
-      };
-
-      await auth.register(userData); // Assumes auth.register is implemented
+      await auth.register({ firstname: firstName, lastname: lastName, email, phone, password });
       setSuccessMessage('Registration successful! You can now log in.');
       setFirstName('');
       setLastName('');
@@ -48,8 +40,6 @@ const RegisterPage = () => {
       setPhone('');
       setPassword('');
       setConfirmPassword('');
-      // Optionally navigate to login:
-      // setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
       setError(err.message || 'Registration failed. Email/phone may be in use or an error occurred.');
     } finally {
@@ -58,44 +48,89 @@ const RegisterPage = () => {
   };
 
   return (
-    <AuthLayout title="Create Admin Account">
-      <form onSubmit={handleSubmit}>
-        {/* Tailwind classes for error and success messages */}
-        {error && <p className="text-red-500 text-sm text-center mb-3">{error}</p>}
-        {successMessage && <p className="text-green-600 text-sm text-center mb-3">{successMessage}</p>}
+    <AuthLayout title="Create an account" subtitle="Register a new FCTA GBV admin account.">
+      <form onSubmit={handleSubmit} noValidate>
+        {error && (
+          <div
+            className="mb-5 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+            role="alert"
+          >
+            <span className="mt-0.5 shrink-0 text-base">⚠</span>
+            <span>{error}</span>
+          </div>
+        )}
+        {successMessage && (
+          <div className="mb-5 flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-primary-green">
+            <span className="mt-0.5 shrink-0 text-base">✓</span>
+            <span>{successMessage}</span>
+          </div>
+        )}
 
-        <Input label="First Name" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
-        <Input label="Last Name" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
-        <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <Input label="Phone Number" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+        <div className="grid grid-cols-2 gap-4">
+          <Input
+            label="First Name"
+            type="text"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder="Ada"
+            required
+          />
+          <Input
+            label="Last Name"
+            type="text"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            placeholder="Okafor"
+            required
+          />
+        </div>
+
         <Input
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          label="Email address"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@example.com"
           required
-          autoComplete="new-password"
         />
         <Input
-          label="Confirm Password"
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          label="Phone number"
+          type="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="+234 800 000 0000"
           required
-          autoComplete="new-password"
         />
 
-        {/* Button component should already be using Tailwind classes internally */}
-        {/* Added w-full for full width and mt-4 for margin top */}
-        <Button type="submit" primary disabled={loading} className="w-full mt-4">
-          {loading ? 'Registering...' : 'Register'}
+        <div className="grid grid-cols-2 gap-4">
+          <Input
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Min. 6 characters"
+            required
+            autoComplete="new-password"
+          />
+          <Input
+            label="Confirm Password"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Repeat password"
+            required
+            autoComplete="new-password"
+          />
+        </div>
+
+        <Button type="submit" primary disabled={loading} className="mt-2 w-full py-3">
+          {loading ? 'Creating account…' : 'Create account'}
         </Button>
 
-        {/* Tailwind classes for the paragraph and link */}
-        <p className="text-center text-sm text-gray-600 mt-4">
+        <p className="mt-6 text-center text-sm text-gray-500">
           Already have an account?{' '}
           <Link to="/login" className="font-semibold text-primary-green hover:text-dark-green">
-            Login here
+            Sign in
           </Link>
         </p>
       </form>

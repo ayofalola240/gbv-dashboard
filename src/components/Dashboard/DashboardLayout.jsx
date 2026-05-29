@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Header from '../common/Header';
+import Sidebar from './Sidebar';
 
-const DashboardLayout = ({ children }) => {
+const DashboardLayout = ({ children, incidentCount }) => {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <main className="flex-grow container mx-auto p-4 sm:p-6 lg:p-8">{children}</main>
-      {/* You can add a footer here if needed */}
+    <div className="min-h-screen bg-light-grey lg:flex">
+      {sidebarOpen && <Sidebar incidentCount={incidentCount} />}
+      <div className="flex min-w-0 flex-1 flex-col">
+        <Header sidebarOpen={sidebarOpen} onMenuToggle={() => setSidebarOpen((isOpen) => !isOpen)} />
+        <main className="flex-grow p-4 sm:p-6 lg:p-8">{children}</main>
+      </div>
     </div>
   );
 };

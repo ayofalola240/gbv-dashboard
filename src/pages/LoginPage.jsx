@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import AuthLayout from '../components/Auth/AuthLayout';
 import Input from '../components/common/Input';
@@ -31,23 +31,41 @@ const LoginPage = () => {
   };
 
   return (
-    <AuthLayout title="Admin Login">
-      <form onSubmit={handleSubmit}>
+    <AuthLayout title="Welcome back" subtitle="Sign in to your FCTA GBV admin account to continue.">
+      <form onSubmit={handleSubmit} noValidate>
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-center" role="alert">
-            {error}
+          <div
+            className="mb-5 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+            role="alert"
+          >
+            <span className="mt-0.5 shrink-0 text-base">⚠</span>
+            <span>{error}</span>
           </div>
         )}
-        <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <Input label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        <Button type="submit" primary className="w-full mt-4" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
+
+        <Input
+          label="Email address"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@example.com"
+          required
+        />
+        <Input
+          label="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Enter your password"
+          required
+        />
+
+        <Button type="submit" primary className="mt-2 w-full py-3" disabled={loading}>
+          {loading ? 'Signing in…' : 'Sign in'}
         </Button>
-        <p className="text-center mt-4">
-          Don't have an account?{' '}
-          <Link to="/register" className="text-primary-green font-semibold">
-            Register here
-          </Link>
+
+        <p className="mt-6 text-center text-sm text-gray-400">
+          Contact your system administrator to create an account.
         </p>
       </form>
     </AuthLayout>

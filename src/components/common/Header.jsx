@@ -3,8 +3,9 @@ import { useAuth } from '../../hooks/useAuth';
 import { useNavigate, Link } from 'react-router-dom';
 import Button from './Button';
 import nigeriaLogo from '../../assets/nigeria-logo.png';
+import { FiMenu, FiX } from 'react-icons/fi';
 
-const Header = () => {
+const Header = ({ sidebarOpen, onMenuToggle }) => {
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -16,6 +17,17 @@ const Header = () => {
   return (
     <header className="bg-primary-white p-4 shadow-md border-b-3 border-primary-green">
       <div className="container mx-auto flex flex-wrap justify-between items-center">
+        {onMenuToggle && (
+          <button
+            type="button"
+            onClick={onMenuToggle}
+            aria-label={sidebarOpen ? 'Close sidebar menu' : 'Open sidebar menu'}
+            className="mr-3 flex h-10 w-10 items-center justify-center rounded-md text-primary-green transition-colors hover:bg-light-green"
+          >
+            {sidebarOpen ? <FiX className="h-6 w-6" /> : <FiMenu className="h-6 w-6" />}
+          </button>
+        )}
+
         {/* Logo and Title Section */}
         <Link to="/dashboard" className="flex items-center">
           <img src={nigeriaLogo} alt="Nigerian Coat of Arms" className="h-8 sm:h-10 mr-2 sm:mr-3" />

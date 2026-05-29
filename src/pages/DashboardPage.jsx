@@ -46,7 +46,7 @@ const DashboardPage = () => {
   }
 
   return (
-    <DashboardLayout>
+    <DashboardLayout incidentCount={stats.totalIncidents}>
       {/* KPI Cards Row */}
       <div className="flex flex-wrap -m-2 mb-6">
         <MetricCard title="Total Incidents" value={stats.totalIncidents} /* icon={<FaFileAlt />} */ />

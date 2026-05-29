@@ -1,4 +1,3 @@
-import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -7,6 +6,8 @@ import NotFoundPage from './pages/NotFoundPage';
 import ProtectedRoute from './ProtectedRoute';
 import AllIncidentsPage from './pages/AllIncidentsPage';
 import IncidentDetailPage from './pages/IncidentDetailPage';
+import AgencyDashboardPage from './pages/AgencyDashboardPage';
+import UserManagementPage from './pages/UserManagementPage';
 
 function App() {
   return (
@@ -35,6 +36,22 @@ function App() {
           element={
             <ProtectedRoute>
               <IncidentDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/agency/:agencySlug"
+          element={
+            <ProtectedRoute>
+              <AgencyDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/users"
+          element={
+            <ProtectedRoute>
+              <UserManagementPage />
             </ProtectedRoute>
           }
         />

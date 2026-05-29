@@ -47,7 +47,7 @@ export const registerUser = async (userData) => {
   // It might just return a success message or an empty 201.
   try {
     return await response.json();
-  } catch (e) {
+  } catch {
     return { message: 'Registration successful, please login.' }; // Or handle empty response
   }
 };
